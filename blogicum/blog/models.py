@@ -89,10 +89,14 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE, verbose_name="Публикация")
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор комментария")
+    post = models.ForeignKey(Post, related_name='comments',
+                             on_delete=models.CASCADE,
+                             verbose_name="Публикация")
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               verbose_name="Автор комментария")
     text = models.TextField(verbose_name="Текст комментария")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Дата добавления")
     is_approved = models.BooleanField(default=True, verbose_name="Одобрено")
 
     def __str__(self):
