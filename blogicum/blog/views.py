@@ -43,11 +43,11 @@ def post_detail(request, post_id):
                              is_published=True,
                              pub_date__lte=timezone.now())
     comments = post.comments.filter(is_approved=True).order_by('-created_at')
-    comment_form = CommentForm()
+    form = CommentForm()
     return render(request, 'blog/detail.html', {
         'post': post,
         'comments': comments,
-        'comment_form': comment_form
+        'form': form
     })
 
 
@@ -67,9 +67,13 @@ def register(request):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = user.posts.filter(is_published=True).order_by('-pub_date')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, 'blog/profile.html', {
         'user_profile': user,
-        'posts': posts
+        'posts': posts,
+        'page_obj': page_obj,
     })
 
 
