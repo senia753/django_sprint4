@@ -4,9 +4,9 @@ from django.urls import path, include
 from blogicum.views import UserRegistrationView, UserProfileView
 
 
-handler403 = 'blogicum.views.csrf_error'
-handler404 = 'blogicum.views.page_not_found'
-handler500 = 'blogicum.views.server_error'
+handler403 = 'blogicum.views.custom_403'
+handler404 = 'blogicum.views.custom_404'
+handler500 = 'blogicum.views.custom_500'
 
 
 urlpatterns = [
