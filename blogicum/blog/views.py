@@ -85,7 +85,7 @@ def create_post(request):
             return redirect('blog:profile', username=request.user.username)
     else:
         form = PostForm()
-    return render(request, 'blog/create_post.html', {'form': form})
+    return render(request, 'blog/create.html', {'form': form})
 
 
 @login_required
@@ -98,7 +98,7 @@ def edit_post(request, post_id):
             return redirect('blog:post_detail', post_id=post.id)
     else:
         form = PostForm(instance=post)
-    return render(request, 'blog/create_post.html', {'form': form})
+    return render(request, 'blog/create.html', {'form': form})
 
 
 @login_required
