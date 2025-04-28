@@ -28,7 +28,7 @@ def category_posts(request, category_slug):
         posts = category.posts.filter(
             posts(is_published=True) | posts(author=request.user),
             pub_date__lte=timezone.now()
-        ).order_by('-pub_date')    
+        ).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
