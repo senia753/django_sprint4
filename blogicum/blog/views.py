@@ -66,7 +66,7 @@ def register(request):
 @login_required
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    posts = user.posts.filter(is_published=True).order_by('-pub_date')
+    posts = user.posts.filter().order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
