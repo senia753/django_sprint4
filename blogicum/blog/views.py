@@ -125,6 +125,10 @@ def create_post(request):
 @login_required
 def edit_post(request, post_id):
     post = get_object_or_404(Post, id=post_id, author=request.user)
+    if not request.user.is_authenticated:
+        return redirect('blog:detail', post_id=post.id)
+    if request.user != post.author:
+        return redirect('blog:detail', post_id=post.id)
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
