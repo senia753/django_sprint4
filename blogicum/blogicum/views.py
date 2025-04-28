@@ -26,6 +26,7 @@ class UserRegistrationView(View):
 class UserProfileView(View):
     def get(self, request, username):
         user = User.objects.get(username=username)
+        profile = user.profile
         posts = user.posts.all()
         now = timezone.now()
         posts = user.posts.filter(
@@ -36,7 +37,8 @@ class UserProfileView(View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return render(request, 'profile.html',
-                      {'user': user, 'posts': posts, 'page_obj': page_obj})
+                      {'user': user, 'profile': profile,
+                       'posts': posts, 'page_obj': page_obj})
 
 
 def custom_404(request, exception):
