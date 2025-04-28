@@ -21,7 +21,7 @@ def category_posts(request, category_slug):
     if not posts.exists():
         posts = []
     if request.user == category.posts.first().author:
-        posts = category.posts.all()    
+        posts = category.posts.all()
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
