@@ -20,6 +20,8 @@ def category_posts(request, category_slug):
         pub_date__lte=timezone.now()).order_by('-pub_date')
     if not posts.exists():
         posts = []
+    if request.user == category.posts.first().author:
+        posts = category.posts.all()    
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -69,7 +71,13 @@ def register(request):
 @login_required
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    posts = user.posts.filter().order_by('-pub_date')
+    posts = Post.objects.filter(author=user).order_by('-pub_date')
+    if not request.user.is_authenticated or request.user != user:
+        posts = posts.filter(
+            is_published=True,
+            pub_date__lte=timezone.now(),
+            category__is_published=True
+        )
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
