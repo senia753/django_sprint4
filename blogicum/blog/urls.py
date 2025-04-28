@@ -7,7 +7,7 @@ app_name = 'blog'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('register/', views.register, name='register'),
+    path('registration/', views.register, name='register'),
     path('profile/<str:username>/',
          views.profile, name='profile'),
     path('profile/<str:username>/edit/',
