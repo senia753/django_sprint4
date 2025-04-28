@@ -29,13 +29,13 @@ class UserProfileView(View):
                       {'user': user, 'posts': posts})
 
 
-def csrf_error(request, exception):
-    return render(request, 'pages/403.html', status=403)
-
-
-def page_not_found(request, exception):
+def custom_404(request, exception):
     return render(request, 'pages/404.html', status=404)
 
 
-def server_error(request):
+def custom_403(request, exception):
+    return render(request, 'pages/403csrf.html', status=403)
+
+
+def custom_500(request):
     return render(request, 'pages/500.html', status=500)
