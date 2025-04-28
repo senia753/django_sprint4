@@ -44,7 +44,6 @@ def post_detail(request, post_id):
                              pub_date__lte=timezone.now())
     comments = post.comments.filter(is_approved=True).order_by('-created_at')
     comment_form = CommentForm()
-    
     return render(request, 'blog/detail.html', {
         'post': post,
         'comments': comments,
@@ -67,7 +66,7 @@ def register(request):
 @login_required
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    posts = user.posts.filter(is_published=True).order_by('-pub_date') 
+    posts = user.posts.filter(is_published=True).order_by('-pub_date')
     return render(request, 'blog/profile.html', {
         'user_profile': user,
         'posts': posts
@@ -140,7 +139,7 @@ def add_comment(request, post_id):
             comment.post = post
             comment.author = request.user
             comment.save()
-            return redirect('blog:detail', post_id=post.id) 
+            return redirect('blog:detail', post_id=post.id)
     return redirect('blog:detail', post_id=post.id)
 
 
