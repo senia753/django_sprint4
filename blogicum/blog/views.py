@@ -15,8 +15,8 @@ def category_posts(request, category_slug):
     category = get_object_or_404(Category,
                                  slug=category_slug, is_published=True)
     posts = category.posts.filter(
-        is_published=True, pub_date__lte=timezone.now()
-    ).order_by('-pub_date')
+        is_published=True,
+        pub_date__lte=timezone.now()).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -28,8 +28,8 @@ def category_posts(request, category_slug):
 
 def index(request):
     posts = Post.objects.filter(
-        is_published=True, pub_date__lte=timezone.now()
-    ).order_by('-pub_date')
+        is_published=True,
+        pub_date__lte=timezone.now()).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -39,10 +39,12 @@ def index(request):
 
 
 def post_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id, is_published=True,
+    post = get_object_or_404(Post, id=post_id,
+                             is_published=True,
                              pub_date__lte=timezone.now())
     comments = post.comments.filter(is_approved=True).order_by('-created_at')
     comment_form = CommentForm()
+    
     return render(request, 'blog/detail.html', {
         'post': post,
         'comments': comments,
@@ -54,19 +56,18 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('blog:index')
+            user = form.save()
+            return redirect('blog:profile', username=user.username)
     else:
         form = UserCreationForm()
-    return render(request, 'registration/registration_form.html', {
-        'form': form
-    })
+    return render(request, 'registration/registration_form.html',
+                  {'form': form})
 
 
 @login_required
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    posts = user.posts.filter(is_published=True).order_by('-pub_date')
+    posts = user.posts.filter(is_published=True).order_by('-pub_date') 
     return render(request, 'blog/profile.html', {
         'user_profile': user,
         'posts': posts
@@ -104,9 +105,7 @@ def create_post(request):
             return redirect('blog:profile', username=request.user.username)
     else:
         form = PostForm()
-    return render(request, 'blog/create.html', {
-        'form': form
-    })
+    return render(request, 'blog/create.html', {'form': form})
 
 
 @login_required
@@ -119,9 +118,7 @@ def edit_post(request, post_id):
             return redirect('blog:detail', post_id=post.id)
     else:
         form = PostForm(instance=post)
-    return render(request, 'blog/create.html', {
-        'form': form
-    })
+    return render(request, 'blog/create.html', {'form': form})
 
 
 @login_required
@@ -143,6 +140,7 @@ def add_comment(request, post_id):
             comment.post = post
             comment.author = request.user
             comment.save()
+            return redirect('blog:detail', post_id=post.id) 
     return redirect('blog:detail', post_id=post.id)
 
 
