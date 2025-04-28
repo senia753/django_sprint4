@@ -29,7 +29,7 @@ class UserProfileView(View):
         posts = user.posts.all()
         now = timezone.now()
         posts = user.posts.filter(
-            is_published=True, 
+            is_published=True,
             pub_date__lte=now) | user.posts.filter(
                 is_published=False, pub_date__gte=now)
         paginator = Paginator(posts, 10)
