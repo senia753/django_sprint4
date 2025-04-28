@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 def category_posts(request, category_slug):
-    category = get_object_or_404(Category, slug=category_slug, 
+    category = get_object_or_404(Category, slug=category_slug,
                                  is_published=True)
 
     posts = category.posts.filter(
