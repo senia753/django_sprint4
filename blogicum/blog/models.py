@@ -104,3 +104,18 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
+                                related_name='profile')
+    bio = models.TextField(blank=True, verbose_name='Биография')
+    avatar = models.ImageField(upload_to='profile_images/', null=True,
+                               blank=True, verbose_name='Аватар')
+
+    def __str__(self):
+        return f"Профиль пользователя {self.user.username}"
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
