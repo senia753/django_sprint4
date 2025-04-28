@@ -140,7 +140,7 @@ def edit_post(request, post_id):
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
-            return redirect('blog:detail', post_id=post.id)
+            return redirect('/posts/<int:post_id>/', post_id=post.id)
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/create.html', {'form': form})
