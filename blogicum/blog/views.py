@@ -116,7 +116,7 @@ def edit_post(request, post_id):
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
-            return redirect('blog:post_detail', post_id=post.id)
+            return redirect('blog:detail', post_id=post.id)
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/create.html', {
@@ -130,7 +130,7 @@ def delete_post(request, post_id):
     if request.method == 'POST':
         post.delete()
         return redirect('blog:profile', username=request.user.username)
-    return redirect('blog:post_detail', post_id=post.id)
+    return redirect('blog:detail', post_id=post.id)
 
 
 @login_required
@@ -143,7 +143,7 @@ def add_comment(request, post_id):
             comment.post = post
             comment.author = request.user
             comment.save()
-    return redirect('blog:post_detail', post_id=post.id)
+    return redirect('blog:detail', post_id=post.id)
 
 
 @login_required
@@ -153,7 +153,7 @@ def edit_comment(request, post_id, comment_id):
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
             form.save()
-            return redirect('blog:post_detail', post_id=post_id)
+            return redirect('blog:detail', post_id=post_id)
     else:
         form = CommentForm(instance=comment)
     return render(request, 'blog/comment.html', {
@@ -167,5 +167,5 @@ def delete_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id, author=request.user)
     if request.method == 'POST':
         comment.delete()
-        return redirect('blog:post_detail', post_id=post_id)
-    return redirect('blog:post_detail', post_id=post_id)
+        return redirect('blog:detail', post_id=post_id)
+    return redirect('blog:detail', post_id=post_id)
