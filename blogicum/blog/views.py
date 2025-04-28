@@ -12,17 +12,20 @@ User = get_user_model()
 
 
 def category_posts(request, category_slug):
-    category = get_object_or_404(Category,
-                                 slug=category_slug, is_published=True)
+    category = get_object_or_404(Category, slug=category_slug, 
+                                 is_published=True)
+
     posts = category.posts.filter(
         is_published=True,
         pub_date__lte=timezone.now()).order_by('-pub_date')
+    if not posts.exists():
+        posts = []
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'blog/category.html', {
         'category': category,
-        'page_obj': page_obj
+        'page_obj': page_obj,
     })
 
 
