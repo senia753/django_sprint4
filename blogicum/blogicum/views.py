@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 class UserRegistrationView(View):
     def get(self, request):
         form = UserCreationForm()
-        return render(request, 'registration/registration.html',
+        return render(request, 'registration/registration_form.html',
                       {'form': form})
 
     def post(self, request):
@@ -19,7 +19,7 @@ class UserRegistrationView(View):
             user = form.save()
             login(request, user)
             return redirect('profile', username=user.username)
-        return render(request, 'registration/registration.html',
+        return render(request, 'registration/registration_form.html',
                       {'form': form})
 
 
