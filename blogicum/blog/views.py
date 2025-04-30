@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import Category, Post, Comment
 from .forms import PostForm, CommentForm, ProfileForm
+from django.db.models import Q
 
 
 User = get_user_model()
@@ -26,7 +27,7 @@ def category_posts(request, category_slug):
         posts = category.posts.all()
     if request.user.is_authenticated:
         posts = category.posts.filter(
-            posts(is_published=True) | posts(author=request.user),
+            Q(is_published=True) | Q(author=request.user),
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')
     paginator = Paginator(posts, 10)
@@ -96,14 +97,20 @@ def profile(request, username):
 
 
 @login_required
-def edit_profile(request, username):
-    user = get_object_or_404(User, username=username)
+def edit_profile(request, username=None):
+    if username is None:
+        user = request.user
+    else:
+        user = get_object_or_404(User, username=username)
     if request.user != user:
         return redirect('blog:profile', username=user.username)
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            user.first_name = form.cleaned_data.get('first_name', '')
+            user.last_name = form.cleaned_data.get('last_name', '')
+            user.save()
             return redirect('blog:profile', username=user.username)
     else:
         form = ProfileForm(instance=user)
@@ -118,7 +125,7 @@ def edit_profile(request, username):
 @login_required
 def create_post(request):
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
+        form = PostForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user

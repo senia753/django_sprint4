@@ -73,10 +73,10 @@ TEMPLATES = [
     },
 ]
 
-TEMPLATES_DIR = BASE_DIR / 'templates'
+TEMPLATES_DIR = BASE_DIR / 'blogicum' / 'templates'
 
 WSGI_APPLICATION = 'blogicum.wsgi.application'
-
+LOGIN_REDIRECT_URL = '/'  # или путь к странице профиля, например, '/profile/<username>/'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

@@ -12,14 +12,18 @@ class PostForm(forms.ModelForm):
             'pub_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        # Добавляем пользователя в форму для дальнейшей проверки
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super().clean()
         pub_date = cleaned_data.get('pub_date')
         if pub_date and pub_date > timezone.now():
-            if not self.instance.pk and not self.initial.get('author'):
-                raise ValidationError(
-                    "Отложенные публикации доступны только для "
-                    "авторизованных пользователей")
+            if not self.instance.pk and not self.user.is_authenticated:
+                raise ValidationError("Отложенные публикации доступны только"
+                                      " для авторизованных пользователей")
         return cleaned_data
 
 
