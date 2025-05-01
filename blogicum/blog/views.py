@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Category, Post, Comment
 from .forms import PostForm, CommentForm, ProfileForm
 from django.http import Http404
-from django.db.models import Count, Q
+from django.db.models import Count
 
 
 User = get_user_model()
