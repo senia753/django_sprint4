@@ -6,7 +6,6 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from .models import Category, Post, Comment
 from .forms import PostForm, CommentForm, ProfileForm
-from django.db.models import Q
 
 
 User = get_user_model()
