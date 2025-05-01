@@ -21,10 +21,6 @@ def category_posts(request, category_slug):
         pub_date__lte=timezone.now(),
         category__is_published=True
     ).order_by('-pub_date')
-    if not posts.exists():
-        posts = []
-    if request.user == category.posts.first().author:
-        posts = category.posts.all()
     if request.user.is_authenticated:
         posts = category.posts.filter(
             Q(is_published=True) | Q(author=request.user),
