@@ -1,7 +1,7 @@
 from django.conf.urls import handler403, handler404, handler500
 from django.contrib import admin
 from django.urls import path, include
-from blogicum.views import UserRegistrationView, UserProfileView
+from blogicum.views import UserRegistrationView
 
 
 handler403 = 'blogicum.views.custom_403'
@@ -17,6 +17,4 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
     path('auth/registration/', UserRegistrationView.as_view(),
          name='registration'),
-    #path('profile/<username>/', UserProfileView.as_view(),
-         #name='profile'),
 ]
