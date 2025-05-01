@@ -17,13 +17,15 @@ User = get_user_model()
 def category_posts(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug,
                                  is_published=True)
-    posts = category.posts.filter(
+    posts = Post.objects.filter(
+        category=category,
         is_published=True,
-        pub_date__lte=timezone.now(),
-        category__is_published=True
+        pub_date__lte=timezone.now()
     ).annotate(
-        comment_count=Count('comments', filter=Q(comments__is_approved=True))
+        comment_count=Count('comments')
     ).order_by('-pub_date')
+    if request.user.is_authenticated and request.user == category.owner:
+        posts = Post.objects.filter(category=category).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -56,7 +58,7 @@ def post_detail(request, post_id):
         and (not request.user.is_authenticated or request.user != post.author)
     ):
         raise Http404("Post is not available")
-    comments = post.comments.filter(is_approved=True).order_by('-created_at')
+    comments = post.comments.all().order_by('created_at')
     form = CommentForm()
     return render(request, 'blog/detail.html', {
         'post': post,
@@ -80,11 +82,11 @@ def register(request):
 
 @login_required
 def profile(request, username):
-    user = get_object_or_404(User, username=username)
-    posts = Post.objects.filter(author=user).annotate(
-        comment_count=Count('comments', filter=Q(comments__is_approved=True))
+    profile_user = get_object_or_404(User, username=username)
+    posts = Post.objects.filter(author=profile_user).annotate(
+        comment_count=Count('comments')
     ).order_by('-pub_date')
-    if not request.user.is_authenticated or request.user != user:
+    if not request.user.is_authenticated or request.user != profile_user:
         posts = posts.filter(
             is_published=True,
             pub_date__lte=timezone.now(),
@@ -94,8 +96,7 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'blog/profile.html', {
-        'profile': user,
-        'posts': posts,
+        'profile': profile_user,
         'page_obj': page_obj,
     })
 
@@ -142,16 +143,14 @@ def create_post(request):
 
 @login_required
 def edit_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id, author=request.user)
+    post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
         return redirect('blog:post_detail', post_id=post.id)
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post,
                         user=request.user)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
+            form.save()
             return redirect('blog:post_detail', post_id=post.id)
     else:
         form = PostForm(instance=post, user=request.user)
