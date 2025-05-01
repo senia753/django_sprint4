@@ -2,6 +2,7 @@ from django import forms
 from .models import Post, Comment, Profile
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from typing import List
 
 
 class PostForm(forms.ModelForm):
@@ -50,7 +51,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['bio', 'avatar']
+        fields: List[str] = []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

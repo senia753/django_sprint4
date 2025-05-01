@@ -8,10 +8,10 @@ app_name = 'blog'
 urlpatterns = [
     path('', views.index, name='index'),
     path('registration/', views.register, name='register'),
-    path('profile/<str:username>/',
-         views.profile, name='profile'),
     path('profile/edit/',
          views.edit_profile, name='edit_profile'),
+    path('profile/<str:username>/',
+         views.profile, name='profile'),
     path('password_change/',
          auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('posts/create/',

@@ -12,10 +12,11 @@ handler500 = 'blogicum.views.custom_500'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blog.urls', namespace='blog')),
+    path('category/', include('blog.urls', namespace='blog')),
     path('pages/', include('pages.urls', namespace='pages')),
     path('auth/', include('django.contrib.auth.urls')),
     path('auth/registration/', UserRegistrationView.as_view(),
          name='registration'),
-    path('profile/<username>/', UserProfileView.as_view(),
-         name='profile'),
+    #path('profile/<username>/', UserProfileView.as_view(),
+         #name='profile'),
 ]

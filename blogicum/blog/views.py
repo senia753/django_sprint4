@@ -90,7 +90,7 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'blog/profile.html', {
-        'user_profile': user,
+        'profile': user,
         'posts': posts,
         'page_obj': page_obj,
     })
@@ -115,8 +115,8 @@ def edit_profile(request, username=None):
     else:
         form = ProfileForm(instance=user)
     posts = user.posts.filter(is_published=True).order_by('-pub_date')
-    return render(request, 'blog/profile.html', {
-        'user_profile': user,
+    return render(request, 'blog/user.html', {
+        'user': request.user,
         'posts': posts,
         'form': form
     })
