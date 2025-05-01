@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment, Profile
+from .models import Post, Comment, Profile, Category
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from typing import List
@@ -14,17 +14,18 @@ class PostForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # Добавляем пользователя в форму для дальнейшей проверки
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(
+            is_published=True)
 
     def clean(self):
         cleaned_data = super().clean()
         pub_date = cleaned_data.get('pub_date')
         if pub_date and pub_date > timezone.now():
             if not self.instance.pk and not self.user.is_authenticated:
-                raise ValidationError("Отложенные публикации доступны только"
-                                      " для авторизованных пользователей")
+                raise ValidationError("Отложенные публикации доступны только "
+                                      "для авторизованных пользователей")
         return cleaned_data
 
 

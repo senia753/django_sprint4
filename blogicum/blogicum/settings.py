@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&sq+f%4*sjjztl)9q#(olx3diu@1a044i0x4fmetmz4^2f%mq='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -76,8 +76,7 @@ TEMPLATES = [
 TEMPLATES_DIR = BASE_DIR / 'blogicum' / 'templates'
 
 WSGI_APPLICATION = 'blogicum.wsgi.application'
-LOGIN_REDIRECT_URL = '/'  # или путь к странице профиля, например, '/profile/<username>/'
-
+LOGIN_REDIRECT_URL = '/'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
