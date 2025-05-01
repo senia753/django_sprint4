@@ -136,7 +136,7 @@ def create_post(request):
             post.save()
             return redirect('blog:profile', username=request.user.username)
     else:
-        form = PostForm()
+        form = PostForm(user=request.user)
     return render(request, 'blog/create.html', {'form': form})
 
 
