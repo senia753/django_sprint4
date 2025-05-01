@@ -15,17 +15,11 @@ User = get_user_model()
 def category_posts(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug,
                                  is_published=True)
-
     posts = category.posts.filter(
         is_published=True,
         pub_date__lte=timezone.now(),
         category__is_published=True
     ).order_by('-pub_date')
-    if request.user.is_authenticated:
-        posts = category.posts.filter(
-            Q(is_published=True) | Q(author=request.user),
-            pub_date__lte=timezone.now()
-        ).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -38,7 +32,9 @@ def category_posts(request, category_slug):
 def index(request):
     posts = Post.objects.filter(
         is_published=True,
-        pub_date__lte=timezone.now()).order_by('-pub_date')
+        pub_date__lte=timezone.now(),
+        category__is_published=True
+    ).order_by('-pub_date')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
