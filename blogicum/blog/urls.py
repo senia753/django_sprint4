@@ -28,6 +28,6 @@ urlpatterns = [
          views.delete_comment, name='delete_comment'),
     path('posts/<int:post_id>/',
          views.post_detail, name='post_detail'),
-    path('<slug:category_slug>/',
+    path('category/<slug:category_slug>/',
          views.category_posts, name='category_posts'),
 ]
