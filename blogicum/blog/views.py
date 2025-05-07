@@ -185,11 +185,12 @@ def add_comment(request, post_id):
         form = CommentForm()
     return render(request, 'blog/comment.html', {'form': form})
 
+
 @login_required
 def edit_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id, post_id=post_id,
                                 author=request.user)
-    
+
     if request.method == 'POST':
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
@@ -197,12 +198,12 @@ def edit_comment(request, post_id, comment_id):
             return redirect('blog:post_detail', post_id=post_id)
     else:
         form = CommentForm(instance=comment)
-    
     return render(request, 'blog/comment.html', {
         'comment': comment,
         'form': form,
         'show_delete_confirmation': False
     })
+
 
 @login_required
 def delete_comment(request, post_id, comment_id):
