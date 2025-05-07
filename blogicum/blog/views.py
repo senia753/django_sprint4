@@ -1,8 +1,6 @@
-import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
-#from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -10,8 +8,7 @@ from .models import Category, Post, Comment, Profile
 from .forms import PostForm, CommentForm, ProfileForm
 from django.http import Http404
 from django.db.models import Count, Q
-from django import forms
-from .emails import send_welcome_email 
+from .emails import send_welcome_email
 from .forms import CustomUserCreationForm
 
 
@@ -76,9 +73,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            user_email = request.POST.get('email')
             send_welcome_email(user.email)
-            #return HttpResponse('Письмо отправлено!')
             return redirect('blog:profile', username=user.username)
     else:
         form = CustomUserCreationForm()
@@ -109,14 +104,14 @@ def profile(request, username):
 
 @login_required
 def edit_profile(request, username=None):
-    user = request.user if username is None else get_object_or_404(User, username=username)
-    
+    user = request.user if username is None else get_object_or_404(
+        User, username=username)
+
     if request.user != user:
         return redirect('blog:profile', username=user.username)
 
-    # Получаем или создаем профиль
-    profile, created = Profile.objects.get_or_create(user=user) 
-    
+    profile, created = Profile.objects.get_or_create(user=user)
+
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
@@ -124,7 +119,7 @@ def edit_profile(request, username=None):
             return redirect('blog:profile', username=user.username)
     else:
         form = ProfileForm(instance=profile)
-    
+
     posts = user.posts.filter(is_published=True).order_by('-pub_date')
     return render(request, 'blog/user.html', {
         'user': user,
@@ -192,7 +187,8 @@ def add_comment(request, post_id):
 
 @login_required
 def edit_comment(request, post_id, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id, post_id=post_id, author=request.user)
+    comment = get_object_or_404(Comment, id=comment_id, post_id=post_id,
+                                author=request.user)
     
     if request.method == 'POST':
         form = CommentForm(request.POST, instance=comment)
@@ -210,16 +206,15 @@ def edit_comment(request, post_id, comment_id):
 
 @login_required
 def delete_comment(request, post_id, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id, post_id=post_id, author=request.user)
-    
-    # Для GET - просто показываем страницу подтверждения
+    comment = get_object_or_404(Comment, id=comment_id, post_id=post_id,
+                                author=request.user)
+
     if request.method == 'GET':
         return render(request, 'blog/comment.html', {
             'comment': comment,
-            'show_delete_confirmation': True  # Флаг для шаблона
+            'show_delete_confirmation': True
         })
-    
-    # Для POST - удаляем комментарий
+
     if request.method == 'POST':
         comment.delete()
         return redirect('blog:post_detail', post_id=post_id)
