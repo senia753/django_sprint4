@@ -20,7 +20,7 @@ urlpatterns = [
          views.edit_post, name='edit_post'),
     path('posts/<int:post_id>/delete/',
          views.delete_post, name='delete_post'),
-    path('posts/<int:post_id>/comment/',
+    path('posts/<int:post_id>/comment/add/',
          views.add_comment, name='add_comment'),
     path('posts/<int:post_id>/comment/<int:comment_id>/edit/',
          views.edit_comment, name='edit_comment'),

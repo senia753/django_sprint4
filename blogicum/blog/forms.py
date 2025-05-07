@@ -3,7 +3,25 @@ from .models import Post, Comment, Profile, Category
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from typing import List
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Этот email уже используется")
+        return email
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -48,7 +66,7 @@ class CommentForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=150, required=False)
     last_name = forms.CharField(max_length=150, required=False)
-    email = forms.EmailField()
+    email = forms.EmailField(required=False)
 
     class Meta:
         model = Profile
